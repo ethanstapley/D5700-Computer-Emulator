@@ -6,6 +6,6 @@ import D5700_Emulator.Memory.RAM
 import D5700_Emulator.Memory.ROM
 import D5700_Emulator.Screen
 
-abstract class Instruction(opcode: Int) {
+abstract class Instruction {
     abstract fun execute(cpu: CPU, ram: RAM, rom: ROM, screen: Screen, input: InputHandler)
 }
