@@ -9,7 +9,7 @@ import D5700_Emulator.Screen
 class JumpInstruction (
     private val aaa: Int
 ): Instruction(){
-    override val autoIncrementPC: Boolean = false
+    override var autoIncrementPC = false
     override fun execute(cpu: CPU, ram: RAM, rom: ROM, screen: Screen, input: InputHandler) {
         if (aaa % 2 != 0) throw IllegalArgumentException("Not a valid address")
         cpu.P = aaa
