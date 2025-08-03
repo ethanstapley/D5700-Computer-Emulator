@@ -12,6 +12,6 @@ class SubInstruction(
     private val rz: Int
 ): Instruction(){
     override fun execute(cpu: CPU, ram: RAM, rom: ROM, screen: Screen, input: InputHandler) {
-        cpu.registers[rz] = (cpu.registers[ry] - cpu.registers[rx]).toByte()
+        cpu.registers[rz] = (cpu.registers[rx] - cpu.registers[ry]).toByte()
     }
 }
