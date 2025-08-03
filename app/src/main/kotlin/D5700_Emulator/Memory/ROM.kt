@@ -1,4 +1,4 @@
 package D5700_Emulator.Memory
 
-class ROM {
+class ROM: Memory() {
 }
