@@ -7,5 +7,6 @@ import D5700_Emulator.Memory.ROM
 import D5700_Emulator.Screen
 
 abstract class Instruction {
+    open val autoIncrementPC: Boolean = true
     abstract fun execute(cpu: CPU, ram: RAM, rom: ROM, screen: Screen, input: InputHandler)
 }
