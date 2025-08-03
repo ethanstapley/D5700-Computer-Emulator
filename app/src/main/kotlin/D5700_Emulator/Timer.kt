@@ -1,4 +1,20 @@
 package D5700_Emulator
 
-class Timer {
+import java.util.concurrent.*
+
+object Timer {
+    private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
+
+    fun start(cpu: CPU) {
+        executor.scheduleAtFixedRate(
+            { if (cpu.T.toInt() > 0) cpu.T = (cpu.T - 1).toByte() },
+            0,
+            16,
+            TimeUnit.MILLISECONDS
+        )
+    }
+
+    fun stop() {
+        executor.shutdownNow()
+    }
 }
