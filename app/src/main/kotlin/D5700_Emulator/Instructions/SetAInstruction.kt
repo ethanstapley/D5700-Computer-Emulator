@@ -6,7 +6,9 @@ import D5700_Emulator.Memory.RAM
 import D5700_Emulator.Memory.ROM
 import D5700_Emulator.Screen
 
-class SetAInstruction(private val aaa: Int) : Instruction() {
+class SetAInstruction(
+    private val aaa: Int
+) : Instruction() {
     override fun execute(cpu: CPU, ram: RAM, rom: ROM, screen: Screen, input: InputHandler) {
         cpu.A = aaa
     }
