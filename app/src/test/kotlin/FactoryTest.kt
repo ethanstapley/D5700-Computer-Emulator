@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-class FactoryTests {
+class FactoryTest {
     data class Computer(val cpu: CPU, val ram: RAM, val rom: ROM, val screen: Screen)
 
     private fun machine(): Computer {

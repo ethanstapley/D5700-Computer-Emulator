@@ -21,6 +21,7 @@ class CPU {
         }
         if (P >= 4095) {
             halted = true
+            Timer.stop()
         }
     }
 
@@ -32,11 +33,6 @@ class CPU {
     }
 
     fun startTimer() {
-        Thread {
-            while (!halted) {
-                if (T.toInt() > 0) T = (T - 1).toByte()
-                Thread.sleep(16)
-            }
-        }.start()
+        Timer.start(this)
     }
 }

@@ -24,10 +24,5 @@ class D5700Emulator {
             Thread.sleep(2)
         }
     }
-
-
-    fun stop() {
-        cpu.halted = true
-    }
-
+    
 }

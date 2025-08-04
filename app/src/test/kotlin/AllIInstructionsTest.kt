@@ -6,20 +6,17 @@ import D5700_Emulator.Memory.*
 import D5700_Emulator.Instructions.*
 
 class InstructionsTest {
-    data class Computer(val cpu: CPU, val ram: RAM, val rom: ROM, val screen: Screen)
-
-    private fun machine(): Computer {
-        val cpu = CPU()
-        val ram = RAM()
-        val rom = ROM()
-        val screen = Screen()
-        return Computer(cpu, ram, rom, screen)
-    }
+    data class Machine(
+        val cpu: CPU = CPU(),
+        val ram: RAM = RAM(),
+        val rom: ROM = ROM(),
+        val screen: Screen = Screen()
+    )
 
     // STORE
     @Test
     fun store_sets_register() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         StoreInstruction(0, 0xFF.toByte()).execute(cpu, ram, rom, screen)
         assertEquals(0xFF.toByte(), cpu.registers[0])
     }
@@ -27,7 +24,7 @@ class InstructionsTest {
     // ADD
     @Test
     fun add_basic_and_wraps_mod256() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.registers[0] = 1
         cpu.registers[1] = 2
         AddInstruction(0, 1, 0).execute(cpu, ram, rom, screen)
@@ -42,7 +39,7 @@ class InstructionsTest {
     // SUB
     @Test
     fun sub_basic_and_underflow_mod256() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.registers[0] = 5
         cpu.registers[1] = 7
         SubInstruction(0, 1, 0).execute(cpu, ram, rom, screen)
@@ -52,7 +49,7 @@ class InstructionsTest {
     // READ
     @Test
     fun read_from_ram_when_M_is_0() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.M = false
         cpu.A = 123
         ram.write(123, 0x42)
@@ -62,7 +59,7 @@ class InstructionsTest {
 
     @Test
     fun read_from_rom_when_M_is_1() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.M = true
         cpu.A = 321
         rom.load(321, 0x7B.toByte())
@@ -73,7 +70,7 @@ class InstructionsTest {
     // WRITE
     @Test
     fun write_to_ram_when_M_is_0() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.M = false
         cpu.A = 200
         cpu.registers[3] = 0xAB.toByte()
@@ -83,7 +80,7 @@ class InstructionsTest {
 
     @Test
     fun write_to_rom_when_M_is_1_should_throw() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.M = true
         cpu.A = 10
         cpu.registers[1] = 0x55
@@ -95,14 +92,14 @@ class InstructionsTest {
     // JUMP
     @Test
     fun jump_sets_P_to_even_address() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         JumpInstruction(0x1F2).execute(cpu, ram, rom, screen)
         assertEquals(0x1F2, cpu.P)
     }
 
     @Test
     fun jump_odd_address_throws() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         assertThrows(IllegalArgumentException::class.java) {
             JumpInstruction(0x1F1).execute(cpu, ram, rom, screen)
         }
@@ -111,7 +108,7 @@ class InstructionsTest {
     // READ_KEYBOARD
     @Test
     fun read_keyboard_parses_hex_up_to_two_digits() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         System.setIn(ByteArrayInputStream("A\n".toByteArray()))
         ReadKeyboardInstruction(0).execute(cpu, ram, rom, screen)
         assertEquals(0x0A, cpu.registers[0].toInt() and 0xFF)
@@ -123,7 +120,7 @@ class InstructionsTest {
 
     @Test
     fun read_keyboard_empty_becomes_zero() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         System.setIn(ByteArrayInputStream("\n".toByteArray()))
         ReadKeyboardInstruction(3).execute(cpu, ram, rom, screen)
         assertEquals(0x00, cpu.registers[3].toInt() and 0xFF)
@@ -131,7 +128,7 @@ class InstructionsTest {
 
     @Test
     fun read_keyboard_more_than_two_digits_throws() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         System.setIn(ByteArrayInputStream("123\n".toByteArray()))
         assertThrows(IllegalStateException::class.java) {
             ReadKeyboardInstruction(0).execute(cpu, ram, rom, screen)
@@ -141,7 +138,7 @@ class InstructionsTest {
     // SWITCH_MEMORY
     @Test
     fun switch_memory_toggles_M() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.M = false
         SwitchMemoryInstruction().execute(cpu, ram, rom, screen)
         assertTrue(cpu.M)
@@ -152,7 +149,7 @@ class InstructionsTest {
     // SKIP_EQUAL
     @Test
     fun skip_equal_advances_P_correctly() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.P = 100
         cpu.registers[1] = 5
         cpu.registers[2] = 5
@@ -168,7 +165,7 @@ class InstructionsTest {
     // SKIP_NOT_EQUAL
     @Test
     fun skip_not_equal_advances_P_correctly() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.P = 200
         cpu.registers[1] = 3
         cpu.registers[2] = 9
@@ -184,7 +181,7 @@ class InstructionsTest {
     //SET_A
     @Test
     fun set_a_sets_address() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         SetAInstruction(0x255).execute(cpu, ram, rom, screen)
         assertEquals(0x255, cpu.A)
     }
@@ -192,7 +189,7 @@ class InstructionsTest {
     // SET_T
     @Test
     fun set_t_sets_timer() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         SetTInstruction(0x7F.toByte()).execute(cpu, ram, rom, screen)
         assertEquals(0x7F, cpu.T.toInt() and 0xFF)
     }
@@ -200,7 +197,7 @@ class InstructionsTest {
     // READ_T
     @Test
     fun read_t_moves_timer_into_register() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.T = 0x22
         ReadTInstruction(6).execute(cpu, ram, rom, screen)
         assertEquals(0x22, cpu.registers[6].toInt() and 0xFF)
@@ -209,7 +206,7 @@ class InstructionsTest {
     //CONVERT_TO_BASE_10
     @Test
     fun convert_to_base10_writes_three_digits_to_ram() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.A = 100
         cpu.registers[2] = 172.toByte()
         ConvertToBaseTenInstruction(2).execute(cpu, ram, rom, screen)
@@ -220,7 +217,7 @@ class InstructionsTest {
 
     @Test
     fun convert_to_base10_small_number() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.A = 5
         cpu.registers[0] = 5
         ConvertToBaseTenInstruction(0).execute(cpu, ram, rom, screen)
@@ -232,7 +229,7 @@ class InstructionsTest {
     // CONVERT_BYTE_TO_ASCII
     @Test
     fun convert_byte_to_ascii_valid_hex_digit() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.registers[0] = 0x0D
         ConvertByteToAsciiInstruction(0, 1).execute(cpu, ram, rom, screen)
         assertEquals('D'.code, cpu.registers[1].toInt() and 0xFF)
@@ -240,7 +237,7 @@ class InstructionsTest {
 
     @Test
     fun convert_byte_to_ascii_masks_high_nibble_and_converts_zero() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.registers[3] = 0x10
         ConvertByteToAsciiInstruction(3, 4).execute(cpu, ram, rom, screen)
         assertEquals('0'.code, cpu.registers[4].toInt() and 0xFF)
@@ -248,7 +245,7 @@ class InstructionsTest {
 
     @Test
     fun convert_byte_to_ascii_converts_hex_digit_D() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.registers[0] = 0x1D
         ConvertByteToAsciiInstruction(0, 1).execute(cpu, ram, rom, screen)
         assertEquals('D'.code, cpu.registers[1].toInt() and 0xFF)
@@ -258,7 +255,7 @@ class InstructionsTest {
     // DRAW
     @Test
     fun draw_writes_char_to_screen_ram() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.registers[1] = 'A'.code.toByte()
         cpu.registers[2] = 3
         cpu.registers[3] = 5
@@ -269,7 +266,7 @@ class InstructionsTest {
 
     @Test
     fun draw_throws_when_char_over_127() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         cpu.registers[0] = 200.toByte()
         cpu.registers[2] = 0
         cpu.registers[3] = 0
@@ -281,7 +278,7 @@ class InstructionsTest {
     // HALT
     @Test
     fun halt_stop_values_change() {
-        val (cpu, ram, rom, screen) = machine()
+        val (cpu, ram, rom, screen) = Machine()
         HaltInstruction().execute(cpu, ram, rom, screen)
         assertEquals(true, cpu.halted)
     }
