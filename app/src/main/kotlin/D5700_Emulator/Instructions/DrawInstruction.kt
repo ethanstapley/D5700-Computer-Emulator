@@ -13,6 +13,10 @@ class DrawInstruction (
 ): Instruction(){
     override fun execute(cpu: CPU, ram: RAM, rom: ROM, screen: Screen, input: InputHandler) {
         val value = cpu.registers[rx]
-        Screen().draw(cpu.registers[ry].toInt(), cpu.registers[rz].toInt(), value)
+        screen.draw(
+            cpu.registers[ry].toInt(),
+            cpu.registers[rz].toInt(),
+            value
+        )
     }
 }
