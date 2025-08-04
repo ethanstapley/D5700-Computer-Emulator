@@ -9,7 +9,6 @@ abstract class Memory {
     }
 
     open fun checkAddress(address: Int) {
-        println("Loading instruction at P = $address")
         if (address < 0 || address >= 4096) {
             throw IllegalArgumentException("Invalid Address")
         }

@@ -27,7 +27,7 @@ class InstructionFactory {
             8 -> SkipEqualInstruction(rx, ry)
             9 -> SkipNotEqualInstruction(rx, ry)
             10 -> SetAInstruction(aaa)
-            11 -> SetTInstruction(secondByte)
+            11 -> SetTInstruction(((rx shl 4) or ry).toByte())
             12 -> ReadTInstruction(rx)
             13 -> ConvertToBaseTenInstruction(rx)
             14 -> ConvertByteToAsciiInstruction(rx, ry)

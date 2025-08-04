@@ -11,11 +11,10 @@ class DrawInstruction (
     private val rz: Int
 ): Instruction(){
     override fun execute(cpu: CPU, ram: RAM, rom: ROM, screen: Screen) {
-        val value = cpu.registers[rx]
-        screen.draw(
-            cpu.registers[ry].toInt(),
-            cpu.registers[rz].toInt(),
-            value
-        )
+        val v = cpu.registers[rx].toInt() and 0xFF
+        require(v <= 0x7F) { "DRAW: value > 0x7F" }
+        val row = ry
+        val col = rz
+        screen.draw(row, col, v.toByte())
     }
 }

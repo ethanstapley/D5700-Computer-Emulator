@@ -9,7 +9,7 @@ class CPU {
     var P: Int = 0
     var T: Byte = 0
     var A: Int = 0
-    var M: Boolean = false
+    var M: Boolean = true
     var halted: Boolean = false
 
     fun tick(ram: RAM, rom: ROM, screen: Screen, factory: InstructionFactory) {
@@ -26,9 +26,8 @@ class CPU {
 
 
     fun loadInstruction(ram: RAM, rom: ROM, factory: InstructionFactory): Instruction {
-        val memory = if (M) rom else ram
-        val b1 = memory.read(P)
-        val b2 = memory.read(P + 1)
+        val b1 = rom.read(P)
+        val b2 = rom.read(P + 1)
         return factory.getInstruction(b1, b2)
     }
 

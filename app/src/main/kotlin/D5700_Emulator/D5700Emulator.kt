@@ -16,6 +16,7 @@ class D5700Emulator {
             rom.load(i, byte)
         }
         println("ROM loaded: ${bytes.size} bytes")
+        cpu.M = false
         cpu.startTimer()
 
         while (!cpu.halted) {

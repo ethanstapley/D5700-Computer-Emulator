@@ -6,6 +6,7 @@ class Screen {
     fun draw(row: Int, col: Int, value: Byte) {
         if ((row < 0 || row > 7) || (col < 0 || col > 7)) throw IllegalArgumentException("Row and Column must be be 0-7")
         data[(row * 8) + col] = value
+        render()
     }
 
     fun render() {
