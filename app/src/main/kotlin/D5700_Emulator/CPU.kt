@@ -18,8 +18,8 @@ class CPU {
 
     }
 
-    fun loadInstruction(): Instruction {
-        return
-    }
+//    fun loadInstruction(): Instruction {
+//        return
+//    }
 
 }
