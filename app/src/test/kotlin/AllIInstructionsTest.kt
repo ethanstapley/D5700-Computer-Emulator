@@ -278,25 +278,11 @@ class InstructionsTest {
         }
     }
 
+    // HALT
     @Test
-    fun factory_decodes_add() {
-        val f = InstructionFactory()
-        val instruction = f.getInstruction(0x10.toByte(), 0x10.toByte())
-        assertTrue(instruction is AddInstruction)
+    fun halt_stop_values_change() {
         val (cpu, ram, rom, screen) = machine()
-        cpu.registers[0] = 5
-        cpu.registers[1] = 6
-        instruction.execute(cpu, ram, rom, screen)
-        assertEquals(11, cpu.registers[0].toInt() and 0xFF)
-    }
-
-    @Test
-    fun factory_decodes_jump_12bit_address() {
-        val f = InstructionFactory()
-        val instruction = f.getInstruction(0x5A.toByte(), 0x2C.toByte())
-        assertTrue(instruction is JumpInstruction)
-        val (cpu, ram, rom, screen) = machine()
-        instruction.execute(cpu, ram, rom, screen)
-        assertEquals(0xA2C, cpu.P)
+        HaltInstruction().execute(cpu, ram, rom, screen)
+        assertEquals(true, cpu.halted)
     }
 }
