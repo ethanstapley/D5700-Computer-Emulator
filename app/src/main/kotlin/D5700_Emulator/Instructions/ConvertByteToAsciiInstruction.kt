@@ -12,9 +12,7 @@ class ConvertByteToAsciiInstruction(
     override fun execute(cpu: CPU, ram: RAM, rom: ROM, screen: Screen) {
         val value = cpu.registers[rx].toInt() and 0x0F
         if (value > 0xF) throw IllegalArgumentException("Value in register must be between 0 and F to convert to ASCII")
-
         val ascii = if (value < 10) (value + '0'.code) else (value - 10 + 'A'.code)
-
         cpu.registers[ry] = ascii.toByte()
     }
 }
