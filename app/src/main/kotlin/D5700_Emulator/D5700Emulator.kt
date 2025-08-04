@@ -8,14 +8,26 @@ class D5700Emulator {
     private val ram = RAM()
     private val rom = ROM()
     private val screen = Screen()
+    private val factory = InstructionFactory()
     private val timer = Timer
 
     fun start(programPath: String) {
+        val bytes = java.io.File(programPath).readBytes()
+        bytes.forEachIndexed { i, byte ->
+            rom.load(i, byte)
+        }
 
+        cpu.startTimer()
+
+        while (!cpu.halted) {
+            cpu.tick(ram, rom, screen, factory)
+            Thread.sleep(2)
+        }
     }
 
-    fun stop() {
 
+    fun stop() {
+        cpu.halted = true
     }
 
 }

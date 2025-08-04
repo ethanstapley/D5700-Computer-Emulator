@@ -13,8 +13,6 @@ class CPU {
     var halted: Boolean = false
 
     fun tick(ram: RAM, rom: ROM, screen: Screen, factory: InstructionFactory) {
-        if (halted) return
-
         val instruction = loadInstruction(ram, rom, factory)
         instruction.execute(this, ram, rom, screen)
 
@@ -31,5 +29,12 @@ class CPU {
         return factory.getInstruction(b1, b2)
     }
 
-
+    fun startTimer() {
+        Thread {
+            while (!halted) {
+                if (T.toInt() > 0) T = (T - 1).toByte()
+                Thread.sleep(16)
+            }
+        }.start()
+    }
 }
