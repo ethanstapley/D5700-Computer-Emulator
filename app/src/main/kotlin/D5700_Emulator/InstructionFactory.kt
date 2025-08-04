@@ -13,6 +13,8 @@ class InstructionFactory {
         val rz = b2 and 0xF
         val aaa = (rx shl 8) or b2
 
+        if (b1 == 0 && b2 == 0) return HaltInstruction()
+
         return when (opcode) {
             0 -> StoreInstruction(rx, secondByte)
             1 -> AddInstruction(rx, ry, rz)

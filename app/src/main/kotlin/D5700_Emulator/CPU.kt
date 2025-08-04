@@ -19,6 +19,9 @@ class CPU {
         if (instruction.autoIncrementPC) {
             P += 2
         }
+        if (P >= 4095) {
+            halted = true
+        }
     }
 
 
